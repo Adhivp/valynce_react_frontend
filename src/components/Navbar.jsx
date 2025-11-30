@@ -5,8 +5,25 @@ import { Database, Wallet, FileStack, Key, Upload, LogOut } from 'lucide-react';
 import { useWallet } from '../context/WalletContext';
 
 const Navbar = () => {
-  const { connected, address, balance, connectWallet, disconnectWallet } = useWallet();
+  const { connected, address, balance, connectWallet, disconnectWallet, fundAccount } = useWallet();
   const location = useLocation();
+  const [funding, setFunding] = React.useState(false);
+
+  const handleFundAccount = async () => {
+    setFunding(true);
+    try {
+      const success = await fundAccount();
+      if (success) {
+        alert('Account funded with 1 APT successfully!');
+      } else {
+        alert('Failed to fund account. Please try again.');
+      }
+    } catch (error) {
+      alert('Error funding account: ' + error.message);
+    } finally {
+      setFunding(false);
+    }
+  };
 
   const truncateAddress = (addr) => {
     if (!addr) return '';
@@ -91,6 +108,18 @@ const Navbar = () => {
                     <span className="text-cyan-400 font-bold">{balance.toFixed(2)} APT</span>
                   </div>
                 </motion.div>
+
+                {balance === 0 && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleFundAccount}
+                    disabled={funding}
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    {funding ? 'Funding...' : 'Fund Account'}
+                  </motion.button>
+                )}
                 
                 <motion.div
                   whileHover={{ scale: 1.05 }}

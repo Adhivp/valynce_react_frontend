@@ -95,6 +95,20 @@ export const WalletProvider = ({ children }) => {
     }
   };
 
+  const fundAccount = async () => {
+    if (!address) return;
+    try {
+      await aptosAPI.fundAccount({ address, amount: 100000000 }); // 1 APT
+      // Wait a bit for transaction to process
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      await fetchBalance(address);
+      return true;
+    } catch (error) {
+      console.error('Error funding account:', error);
+      return false;
+    }
+  };
+
   const value = {
     connected,
     address,
@@ -103,6 +117,7 @@ export const WalletProvider = ({ children }) => {
     connectWallet,
     disconnectWallet,
     refreshBalance,
+    fundAccount,
   };
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;
