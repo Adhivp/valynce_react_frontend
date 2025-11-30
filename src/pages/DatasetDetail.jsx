@@ -47,19 +47,19 @@ const DatasetDetail = () => {
     try {
       setPurchasing(true);
 
-      // Call Aptos payment API
-      const paymentResponse = await aptosAPI.payLicense({
-        buyer_address: address,
-        dataset_id: dataset.id,
-        amount: dataset.price_apt,
-      });
+      // Determine license type as integer
+      const licenseTypeMap = { 'standard': 0, 'extended': 1, 'enterprise': 2 };
+      const licenseTypeInt = licenseTypeMap[selectedLicenseType] || 0;
+
+      // Determine duration in days based on license type
+      const durationDays = selectedLicenseType === 'standard' ? 30 : selectedLicenseType === 'extended' ? 90 : null;
 
       // Record purchase in database
       const purchaseData = {
         dataset_id: dataset.id,
-        buyer_wallet: address,
-        license_type: selectedLicenseType,
-        transaction_hash: paymentResponse.data.transaction_hash,
+        user_wallet: address,
+        license_type: licenseTypeInt,
+        duration_days: durationDays,
       };
 
       await datasetsAPI.purchaseLicense(purchaseData);
@@ -132,7 +132,7 @@ const DatasetDetail = () => {
                     )}
                   </div>
                   <h1 className="text-4xl font-bold text-white">{dataset.title}</h1>
-                  <p className="text-gray-400">by {dataset.owner_wallet.slice(0, 6)}...{dataset.owner_wallet.slice(-4)}</p>
+                  <p className="text-gray-400">by {dataset.owner_username || 'Unknown'}</p>
                 </div>
               </div>
 
@@ -164,7 +164,7 @@ const DatasetDetail = () => {
                   <Download className="w-6 h-6 text-cyan-400 flex-shrink-0 mt-1" />
                   <div>
                     <div className="text-gray-400 text-sm">Downloads</div>
-                    <div className="text-white font-semibold">{dataset.download_count}</div>
+                    <div className="text-white font-semibold">{dataset.downloads || 0}</div>
                   </div>
                 </div>
 

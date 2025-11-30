@@ -8,7 +8,7 @@ import DatasetCard from '../components/DatasetCard';
 import Button from '../components/Button';
 
 const MyDatasets = () => {
-  const { connected, address, connectWallet, refreshBalance } = useWallet();
+  const { connected, address, privateKey, connectWallet, refreshBalance } = useWallet();
   const [datasets, setDatasets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [minting, setMinting] = useState(null);
@@ -36,19 +36,29 @@ const MyDatasets = () => {
     try {
       setMinting(datasetId);
 
+      if (!privateKey) {
+        alert('Private key not found. Please reconnect your wallet.');
+        return;
+      }
+
       // Call Aptos mint API
       const mintResponse = await aptosAPI.mintDataset({
-        owner_address: address,
+        private_key: privateKey,
         dataset_id: datasetId,
-        dataset_hash: `hash_${datasetId}_${Date.now()}`,
+        hash: `hash_${datasetId}_${Date.now()}`,
+        uri: `ipfs://dataset_${datasetId}`,
       });
 
-      // Update dataset in database
-      await datasetsAPI.mint(datasetId, mintResponse.data.transaction_hash);
+      if (mintResponse.data.success) {
+        // Update dataset in database
+        await datasetsAPI.mint(datasetId, mintResponse.data.transaction_hash);
 
-      alert('NFT minted successfully!');
-      refreshBalance();
-      fetchMyDatasets();
+        alert('NFT minted successfully!');
+        refreshBalance();
+        fetchMyDatasets();
+      } else {
+        throw new Error(mintResponse.data.error || 'Minting failed');
+      }
     } catch (error) {
       console.error('Error minting NFT:', error);
       alert('Failed to mint NFT. Please try again.');

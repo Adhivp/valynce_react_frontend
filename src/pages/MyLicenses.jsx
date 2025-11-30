@@ -85,9 +85,9 @@ const MyLicenses = () => {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-2">{license.dataset.title}</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">{license.dataset_title}</h3>
                     <span className="px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-semibold">
-                      {license.dataset.category}
+                      {['Standard', 'Extended', 'Enterprise'][license.license_type] || 'Standard'}
                     </span>
                   </div>
                   <Key className="w-6 h-6 text-cyan-400" />
@@ -97,13 +97,15 @@ const MyLicenses = () => {
                   <div className="flex items-center space-x-2 text-sm">
                     <Calendar className="w-4 h-4 text-gray-400" />
                     <span className="text-gray-400">License Type:</span>
-                    <span className="text-white font-semibold capitalize">{license.license_type}</span>
+                    <span className="text-white font-semibold capitalize">
+                      {['Standard', 'Extended', 'Enterprise'][license.license_type] || 'Standard'}
+                    </span>
                   </div>
 
                   <div className="flex items-center space-x-2 text-sm">
                     <Clock className="w-4 h-4 text-gray-400" />
                     <span className="text-gray-400">Purchased:</span>
-                    <span className="text-white">{new Date(license.purchase_date).toLocaleDateString()}</span>
+                    <span className="text-white">{new Date(license.purchased_at).toLocaleDateString()}</span>
                   </div>
 
                   {license.expires_at && (
@@ -111,20 +113,6 @@ const MyLicenses = () => {
                       <Clock className="w-4 h-4 text-gray-400" />
                       <span className="text-gray-400">Expires:</span>
                       <span className="text-white">{new Date(license.expires_at).toLocaleDateString()}</span>
-                    </div>
-                  )}
-
-                  {license.dataset.ipfs_uri && (
-                    <div className="pt-3">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        className="w-full"
-                        icon={ExternalLink}
-                        onClick={() => window.open(license.dataset.ipfs_uri, '_blank')}
-                      >
-                        Access Dataset
-                      </Button>
                     </div>
                   )}
                 </div>

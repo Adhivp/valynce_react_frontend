@@ -31,8 +31,12 @@ const Navbar = () => {
               className="flex items-center space-x-3"
             >
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-600 blur-lg opacity-75 rounded-full" />
-                <Database className="relative w-10 h-10 text-cyan-400" />
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-600 blur-lg opacity-75 rounded-lg" />
+                <img 
+                  src="/Valynce_logo.jpeg" 
+                  alt="Valynce Logo" 
+                  className="relative w-10 h-10 rounded-lg object-cover"
+                />
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Valynce

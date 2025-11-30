@@ -26,9 +26,12 @@ const Upload = () => {
     description: '',
     category: categories[0],
     price_apt: '',
+    per_query_price: '0',
     size_mb: '',
     format: '',
+    tags: '',
     ipfs_uri: '',
+    file_hash: '',
   });
 
   const handleInputChange = (e) => {
@@ -51,7 +54,11 @@ const Upload = () => {
         ...formData,
         owner_wallet: address,
         price_apt: parseFloat(formData.price_apt),
+        per_query_price: parseFloat(formData.per_query_price),
         size_mb: parseFloat(formData.size_mb),
+        file_hash: formData.file_hash || `hash_${Date.now()}`,
+        ipfs_uri: formData.ipfs_uri || '',
+        tags: formData.tags || '',
       };
 
       await datasetsAPI.create(datasetData);
@@ -220,6 +227,37 @@ const Upload = () => {
               onChange={handleInputChange}
               className="w-full px-4 py-3 bg-gray-800/50 border border-cyan-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20"
               placeholder="ipfs://..."
+            />
+          </div>
+
+          {/* File Hash */}
+          <div>
+            <label className="block text-gray-400 text-sm font-semibold mb-2">
+              File Hash
+            </label>
+            <input
+              type="text"
+              name="file_hash"
+              value={formData.file_hash}
+              onChange={handleInputChange}
+              required
+              className="w-full px-4 py-3 bg-gray-800/50 border border-cyan-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20"
+              placeholder="SHA256 hash of your dataset file"
+            />
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label className="block text-gray-400 text-sm font-semibold mb-2">
+              Tags (comma-separated)
+            </label>
+            <input
+              type="text"
+              name="tags"
+              value={formData.tags}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-gray-800/50 border border-cyan-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-500/20"
+              placeholder="e.g., weather, climate, historical"
             />
           </div>
 
